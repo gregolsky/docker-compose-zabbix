@@ -1,0 +1,25 @@
+version: "3.3"
+services:
+
+    zabbix-server:
+        image: zabbix/zabbix-server-mysql:ubuntu-5.2-latest
+        env_file:
+            - zabbix-server.env
+        expose:
+            - 10051
+        volumes:
+            - ./zabbix-server/alertscripts:/usr/lib/zabbix/alertscripts:ro
+            - ./zabbix-server/externalscripts:/usr/lib/zabbix/externalscripts:ro
+        restart: on-failure
+        depends_on: 
+            - zabbix-mysql
+        
+    zabbix-mysql:
+        image: mysql:8
+        command: mysqld --character-set-server=utf8 --collation-server=utf8_bin
+        restart: on-failure
+        expose:
+            - 3306
+        env_file:
+            - zabbix-db.env
+        
